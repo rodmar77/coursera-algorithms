@@ -11,16 +11,13 @@ class ConstructSuffixTree {
 
     static class Node {
         private final Node[] next;
-        private final Node parent;
-
         private int start, end, depth;
 
-        Node(final Node parent, final int depth, final int start) {
-            this(parent, depth, start, start + 1);
+        Node(final int depth, final int start) {
+            this(depth, start, start + 1);
         }
 
-        Node(final Node parent, final int depth, final int start, final int end) {
-            this.parent = parent;
+        Node(final int depth, final int start, final int end) {
             this.next = new Node[6];
 
             this.depth = depth;
@@ -38,15 +35,6 @@ class ConstructSuffixTree {
 
         Node get(final char c) {
             return next[indexOf(c)];
-        }
-
-        Node getTopParent() {
-            Node result = (this.parent.start < 0) ? this : this.parent;
-            while (result.parent.start >= 0) {
-                result = result.parent;
-            }
-
-            return result;
         }
 
         void put(final char c, final Node child) {
@@ -112,7 +100,7 @@ class ConstructSuffixTree {
         private final Node root;
 
         SuffixTree(final char[] text) {
-            this.root = new Node(null, -1, -1, -1);
+            this.root = new Node(-1, -1, -1);
             this.text = text;
 
             createTree();
@@ -136,12 +124,12 @@ class ConstructSuffixTree {
                 }
 
                 if (cut > 0) {
-                    final Node descendingNode = new Node(changing, changing.depth + 1, changing.start + cut, changing.end);
+                    final Node descendingNode = new Node(changing.depth + 1, changing.start + cut, changing.end);
                     descendingNode.putAll(changing.next);
                     changing.clear();
                     changing.put(text[descendingNode.start], descendingNode);
 
-                    final Node newNode = new Node(changing, changing.depth + 1, arrayIndex + cut, text.length);
+                    final Node newNode = new Node(changing.depth + 1, arrayIndex + cut, text.length);
                     changing.put(text[newNode.start], newNode);
 
                     changing.end = changing.start + cut;
@@ -149,7 +137,7 @@ class ConstructSuffixTree {
                     add(changing, arrayIndex + (changing.end - changing.start));
                 }
             } else {
-                root.put(text[arrayIndex], new Node(root, root.depth + 1, arrayIndex, text.length));
+                root.put(text[arrayIndex], new Node(root.depth + 1, arrayIndex, text.length));
             }
         }
 
