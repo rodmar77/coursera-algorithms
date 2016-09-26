@@ -28,7 +28,7 @@ class KmpSearch {
         this.length = pattern.length();
 
         this.dfa = new int[4][length + 1]; 
-        this.dfa[indexOf(pattern.charAt(0))][0] = 1; 
+        this.dfa[indexOf(pattern.charAt(0))][0] = 1;
         for (int x = 0, j = 1; j <= length; j++) {
             for (int c = 0; c < 4; c++) { 
                 dfa[c][j] = dfa[c][x];
@@ -36,7 +36,7 @@ class KmpSearch {
 
             if (j < length) {
                 dfa[indexOf(pattern.charAt(j))][j] = j + 1; 
-                x = dfa[indexOf(pattern.charAt(j))][x]; 
+                x = dfa[indexOf(pattern.charAt(j))][x];
             }
         }
     } 

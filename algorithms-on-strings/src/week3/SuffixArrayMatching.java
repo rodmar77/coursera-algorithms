@@ -1,18 +1,31 @@
 package week3;
 
+import java.util.HashSet;
 import java.util.Scanner;
+import java.util.Set;
 
-class ConstructLargeSuffixArray {
+class SuffixArrayMatching {
 
     public static void main(final String[] args) {
         try (final Scanner in = new Scanner(System.in)) {
-            final int[] result = buildSuffixArray(in.next());
-            for (int i = 0; i < result.length; i++) {
-                if (i > 0) {
+            final String text = in.next() + "$";
+            final int[] suffixArray = buildSuffixArray(text);
+
+            final Set<Integer> values = new HashSet<>();
+            final int patternCount = in.nextInt();
+            for (int i = 0; i < patternCount; i++) {
+                addOccurrences(in.next(), text, suffixArray, values);
+            }
+
+            boolean first = true;
+            for (final int value : values) {
+                if (first) {
+                    first = false;
+                } else {
                     System.out.print(" ");
                 }
 
-                System.out.print(result[i]);
+                System.out.print(value);
             }
 
             System.out.println();
@@ -100,6 +113,62 @@ class ConstructLargeSuffixArray {
         }
 
         return newClass;
+    }
+
+    private static void addOccurrences(
+                                    final String pattern, 
+                                    final String text, 
+                                    final int[] suffixArray, 
+                                    final Set<Integer> result) {
+
+        final int textLength = text.length(), pattLength = pattern.length();
+        int minIndex = 0, maxIndex = textLength;
+        while(minIndex < maxIndex) {
+            final int midIndex = (minIndex + maxIndex) / 2;
+            final String substring = text.substring(
+                                                suffixArray[midIndex], 
+                                                suffixArray[midIndex] + 
+                                                    min(
+                                                      textLength - suffixArray[midIndex], 
+                                                      pattLength));
+
+            final int flag = substring.compareTo(pattern);
+            if (flag < 0) {
+                minIndex = midIndex + 1;
+            } else {
+                maxIndex = midIndex;
+            }
+        }
+
+        maxIndex = textLength;
+        int start = minIndex;
+        while(minIndex < maxIndex) {
+            final int midIndex = (minIndex + maxIndex) / 2;
+            final String substring = text.substring(
+                                                suffixArray[midIndex], 
+                                                suffixArray[midIndex] + 
+                                                    min(
+                                                      textLength - suffixArray[midIndex], 
+                                                      pattLength));
+
+            final int flag = substring.compareTo(pattern);
+            if (flag > 0) {
+                maxIndex = midIndex;
+            } else {
+                minIndex = midIndex + 1;
+            }
+        }
+
+        int end = maxIndex;
+        if (start <= end) {
+            for (int i = start; i < end; i++) {
+                result.add(suffixArray[i]);
+            }
+        }
+    }
+
+    private static int min(final int a, final int b) {
+        return (a < b) ? a : b;
     }
 
     private static int indexOf(final char c) {

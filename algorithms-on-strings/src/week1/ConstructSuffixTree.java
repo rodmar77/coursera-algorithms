@@ -42,13 +42,13 @@ class ConstructSuffixTree {
         }
 
         void putAll(final Node[] nodes) {
-            for (int i = 0; i < 6; i++) {
+            for (int i = 0; i < 5; i++) {
                 this.next[i] = nodes[i];
             }
         }
 
         void clear() {
-            for (int i = 0; i < 6; i++) {
+            for (int i = 0; i < 5; i++) {
                 this.next[i] = null;
             }
         }
@@ -68,26 +68,13 @@ class ConstructSuffixTree {
         }
 
         boolean isEmpty() {
-            for (int i = 0; i < 6; i++) {
+            for (int i = 0; i < 5; i++) {
                 if (next[i] != null) {
                     return false;
                 }
             }
 
             return true;
-        }
-
-        public boolean equals(final Object other) {
-            if (!(other instanceof Node)) {
-                return false;
-            }
-
-            final Node that = (Node) other;
-            return ((this.start == that.start) && (this.end == that.end) && (this.depth == that.depth));
-        }
-
-        public int hashCode() {
-            return (this.start + ":" + this.end + ":" + this.depth).hashCode();
         }
 
         public String toString() {
